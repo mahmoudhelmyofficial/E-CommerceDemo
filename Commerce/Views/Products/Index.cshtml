@@ -1,0 +1,75 @@
+﻿@using Commerce.ViewModels;
+@model ProductsListVM
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="upperBar">
+    @if(User.IsInRole("Admin"))
+    {
+        <a class="btn btn-outline-primary" asp-action="Create">Create Product</a>
+    }
+    <div class="d-flex">
+        <form asp-action="search" class="d-flex">
+            <input type="search" name="searchKey" placeholder="Search For Product" class="btn-search " />
+            <button type="submit" class="btn btn-primary" style="margin-left:-40px"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+
+        <div class="btn-group ms-4">
+            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                Filter By Category
+            </button>
+            <ul class="dropdown-menu">
+                @foreach (var item in Model.Categories)
+                {
+                    <li><a class="dropdown-item" asp-action="filter" asp-route-filterCat="@item.Name">@item.Name</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+<div style="
+            display: grid;
+            grid-template-columns: repeat(auto-fill,minmax(300px,1fr));
+            grid-gap: 20px;">
+    @foreach (var item in Model.Products)
+    {
+        <div class="card" style="width: 18rem;">
+            <img src="data:image\/*;base64,@(Convert.ToBase64String(item.ProductImage))" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h3 class="card-title">@item.Name</h3>
+                <h5 class="card-title">@item.Category.Name</h5>
+                <p class="card-text">@item.Description</p>
+                <h4 class="card-text">$ @item.Price</h4>
+                <div style="display:flex;justify-content:space-between">
+                    <a asp-action="AddToCart" asp-controller="Cart" asp-route-productId="@item.Id" class="btn btn-outline-primary">Add To Cart</a>
+                    @if(User.IsInRole("Admin"))
+                    {
+                        <a class="btn btn-outline-danger" asp-action="delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .btn-search {
+        width: 400px;
+        border-radius: 10px;
+        text-align: center;
+        border-width: 0.1px;
+        border-color: antiquewhite;
+    }
+    .upperBar{
+        display:flex;
+        justify-content:space-between;
+        margin-top:20px;
+        margin-bottom:40px;
+        vertical-align:central;
+    }
+</style>

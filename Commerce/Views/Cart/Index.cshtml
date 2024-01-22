@@ -1,0 +1,46 @@
+﻿@using Commerce.ViewModels;
+@model CartViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div style="display:flex;justify-content:space-between; vertical-align:central" class="mb-4">
+    <h2>Your Cart</h2>
+    <div class="d-flex">
+        <h5 class="me-4">Total Products : @Model.TotalProducts</h5>
+        <h5 class="ms-4">Total Price : $ @Model.TotalPrice</h5>
+    </div>
+    <a asp-action="RemoveAll" class="btn btn-outline-danger">Clear My Cart</a>
+</div>
+
+<div style="
+            display: grid;
+            grid-template-columns: repeat(auto-fill,minmax(300px,1fr));
+            grid-gap: 20px;">
+    @foreach (var item in Model.Products)
+    {
+        <div class="card" style="width: 18rem;">
+            @if (item.ProductImage is null)
+            {
+                <img src="none" />
+            }
+            else
+            {
+                <img src="data:image\/*;base64,@(Convert.ToBase64String(item.ProductImage))" class="card-img-top" alt="...">
+            }
+            <div class="card-body">
+                <h3 class="card-title">@item.Name</h3>
+                <p class="card-text">@item.Description</p>
+                <div style="display:flex;justify-content:space-between" class="mb-2">
+                    <h5 class="card-text">$ @item.Price</h5>
+                    <h5 class="card-text">Total Price : $ @item.TotalPrice</h5>
+                </div>
+                <div style="display:flex;justify-content:space-between">
+                    <h5>Count : @item.ProductCount</h5>
+                    <a asp-route-id="@item.Id" asp-action="delete" class="btn btn-outline-danger">Remove</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
